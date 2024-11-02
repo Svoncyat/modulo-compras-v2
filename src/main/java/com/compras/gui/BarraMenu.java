@@ -23,6 +23,19 @@ public class BarraMenu extends JFrame {
         //submenus para maestros
 
         JMenu articulos = new JMenu("Articulos");
+        JMenuItem nombrearticulo = new JMenuItem("Nombre del articulo");
+        JMenuItem stockarticulo = new JMenuItem("Stock de articulo");
+        JMenuItem agregararticulos = new JMenuItem("Agregar articulos");
+        JMenuItem eliminararticulo = new JMenuItem("Elimianr articulo");
+
+        JMenu proveedores = new JMenu("Proveedores");
+        JMenuItem nombreproveedres = new JMenuItem("Nombre de proveedores");
+
+
+
+        JMenu compradores = new JMenu("Compradores");
+        JMenuItem nombrecomprador = new JMenuItem("Nombre del comprador");
+
 
 
         // Opciones de barra de menu
@@ -41,7 +54,22 @@ public class BarraMenu extends JFrame {
 
         //Opciones del menu de Maestros 
 
-        articulos.add(articulos);
+        //ARTICULOS 
+        maestros.add(articulos);
+        articulos.add(nombrearticulo);
+        articulos.add(stockarticulo);
+        articulos.add(agregararticulos);
+        articulos.add(eliminararticulo);
+
+        //PROVEEDORES
+        maestros.add(proveedores);
+        proveedores.add(nombreproveedres);
+
+        //COMPRADORES 
+        maestros.add(compradores);
+        compradores.add(nombrecomprador);
+        
+
 
 
         return menuBar;
