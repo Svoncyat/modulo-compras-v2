@@ -35,6 +35,7 @@ public class BarraMenu extends JFrame {
 
         JMenu compradores = new JMenu("Compradores");
         JMenuItem nombrecomprador = new JMenuItem("Nombre del comprador");
+        JMenuItem agregarcomprador = new JMenuItem("Agregar comprador");
 
 
 
@@ -68,6 +69,7 @@ public class BarraMenu extends JFrame {
         //COMPRADORES 
         maestros.add(compradores);
         compradores.add(nombrecomprador);
+        compradores.add(agregarcomprador);
         
 
 
