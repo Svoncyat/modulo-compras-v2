@@ -5,7 +5,7 @@ import com.compras.db.ConexionDB;
 import java.sql.*;
 
 public class UsuarioDAO {
-    private Connection conexion;
+    private final Connection conexion;
 
     public UsuarioDAO(ConexionDB conexionDB) {
         this.conexion = conexionDB.conectar();

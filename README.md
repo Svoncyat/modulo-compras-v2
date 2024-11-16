@@ -1,4 +1,4 @@
-**M2: Compras**
+**Módulo Compras**
 
 **Seguridad:**
 - Usuarios 

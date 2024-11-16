@@ -3,13 +3,11 @@ package com.compras.gui;
 import javax.swing.*;
 import java.awt.*;
 
-import com.compras.gui.BarraMenu;
-
 public class PrincipalMenu extends JFrame {
     public PrincipalMenu() {
         super("Módulo Compras");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 400);
+        setSize(600, 500);
         setLocationRelativeTo(null);
 
         BarraMenu barramenu = new BarraMenu();

@@ -57,7 +57,6 @@ public class BarraMenu extends JFrame {
         JMenu ordenes01 = new JMenu("Ordenes");
 
         // Opciones de barra de menu
-
         menuBar.add(seguridad);
         menuBar.add(maestros);
         menuBar.add(consultas);
@@ -80,13 +79,13 @@ public class BarraMenu extends JFrame {
         articulos.add(agregararticulos);
         articulos.add(eliminararticulo);
 
-        //PROVEEDORES
+        //Proveedores
         maestros.add(proveedores);
         proveedores.add(nombreproveedres);
         proveedores.add(agregarproveedor);
         proveedores.add(eliminarproveedor);
 
-        //COMPRADORES
+        //Com
         maestros.add(compradores);
         compradores.add(nombrecomprador);
         compradores.add(agregarcomprador);

@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionDB {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;" +
+    private static final String URL = "jdbc:sqlserver://26.134.176.109:1433;" +
             "database=Modulo_Compras;" +
             "user=sa;" +
             "password=5284;" +

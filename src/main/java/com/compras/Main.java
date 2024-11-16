@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 import com.compras.db.ConexionDB;
-import com.compras.gui.BarraMenu;
 import com.compras.gui.AutenticacionMenu;
 
 public class Main extends JFrame {
