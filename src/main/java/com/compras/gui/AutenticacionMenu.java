@@ -8,7 +8,6 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.Principal;
 
 public class AutenticacionMenu extends JFrame {
     private JTextField tfusuario;
