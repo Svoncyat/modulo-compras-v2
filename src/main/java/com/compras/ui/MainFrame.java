@@ -1,6 +1,9 @@
 package com.compras.ui;
 
 import javax.swing.*;
+
+import com.compras.ui.menu.MenuBar;
+
 import java.awt.*;
 
 public class MainFrame extends JFrame {

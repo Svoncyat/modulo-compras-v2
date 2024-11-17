@@ -12,65 +12,56 @@ public class MasterMenu {
         JMenu maestros = new JMenu("Maestros");
 
         // Artículos
-        JMenu articulos = new JMenu("Artículos");
-        JMenuItem agregararticulos = new JMenuItem("Agregar Artículo");
-        articulos.add(agregararticulos);
-
-        // Proveedores
-        JMenu proveedores = new JMenu("Proveedores");
-        JMenuItem agregarproveedor = new JMenuItem("Agregar Proveedor");
-        proveedores.add(agregarproveedor);
-
-        // Compradores
-        JMenu compradores = new JMenu("Compradores");
-        JMenuItem agregarcomprador = new JMenuItem("Agregar Comprador");
-        compradores.add(agregarcomprador);
-
-        // Transacciones
-        JMenu transacciones = new JMenu("Transacciones");
-        JMenuItem agregartransacciones = new JMenuItem("Agregar Transacción");
-        transacciones.add(agregartransacciones);
-
-        // Orden de compra
-        JMenu ordendecompra = new JMenu("Orden de compra");
-        JMenuItem agregarorden = new JMenuItem("Agregar Orden");
-        ordendecompra.add(agregarorden);
-
-        // Agregar submenús a "Maestros"
-        maestros.add(articulos);
-        maestros.add(proveedores);
-        maestros.add(compradores);
-        maestros.add(transacciones);
-        maestros.add(ordendecompra);
-
-        // Añadir ActionListeners
-        agregararticulos.addActionListener(new ActionListener() {
+        JMenuItem articulosItem = new JMenuItem("Artículos");
+        articulosItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarFormularioArticulos();
             }
         });
 
-        agregarproveedor.addActionListener(new ActionListener() {
+        // Proveedores
+        JMenuItem proveedoresItem = new JMenuItem("Proveedores");
+        proveedoresItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarFormularioProveedores();
             }
         });
 
-        agregarcomprador.addActionListener(new ActionListener() {
+        // Compradores
+        JMenuItem compradoresItem = new JMenuItem("Compradores");
+        compradoresItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarFormularioCompradores();
             }
         });
 
-        agregartransacciones.addActionListener(new ActionListener() {
+        // Transacciones
+        JMenuItem transaccionesItem = new JMenuItem("Transacciones");
+        transaccionesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarFormularioTransacciones();
             }
         });
+
+        // Orden de compra
+        JMenuItem ordenCompraItem = new JMenuItem("Orden de compra");
+        ordenCompraItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarFormularioOrdenCompra();
+            }
+        });
+
+        // Agregar items a "Maestros"
+        maestros.add(articulosItem);
+        maestros.add(proveedoresItem);
+        maestros.add(compradoresItem);
+        maestros.add(transaccionesItem);
+        maestros.add(ordenCompraItem);
 
         return maestros;
     }
@@ -153,6 +144,31 @@ public class MasterMenu {
         botones.add(new JButton("Agregar Transacción"));
         botones.add(new JButton("Eliminar Transacción"));
         botones.add(new JButton("Actualizar Transacción"));
+
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(botones, BorderLayout.SOUTH);
+        frame.setVisible(true);
+    }
+
+    private void mostrarFormularioOrdenCompra() {
+        JFrame frame = new JFrame("Gestión de Orden de Compra");
+        frame.setSize(400, 250);
+        frame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
+        panel.add(new JLabel("Número de Orden:"));
+        panel.add(new JTextField());
+        panel.add(new JLabel("Fecha de Orden:"));
+        panel.add(new JTextField());
+        panel.add(new JLabel("Proveedor:"));
+        panel.add(new JTextField());
+        panel.add(new JLabel("Estado de Orden:"));
+        panel.add(new JComboBox<>(new String[]{"Emitido", "Recibido", "Parcial", "Cancelado"}));
+
+        JPanel botones = new JPanel(new GridLayout(1, 3, 5, 0));
+        botones.add(new JButton("Agregar Orden"));
+        botones.add(new JButton("Eliminar Orden"));
+        botones.add(new JButton("Actualizar Orden"));
 
         frame.add(panel, BorderLayout.CENTER);
         frame.add(botones, BorderLayout.SOUTH);

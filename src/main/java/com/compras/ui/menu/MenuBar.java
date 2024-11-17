@@ -1,8 +1,6 @@
-package com.compras.ui;
+package com.compras.ui.menu;
 
 import javax.swing.JMenuBar;
-
-import com.compras.ui.menu.*;
 
 public class MenuBar {
     public JMenuBar inicializarBarraMenu() {
