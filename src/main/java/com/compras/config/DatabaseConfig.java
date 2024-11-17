@@ -1,10 +1,10 @@
-package com.compras.db;
+package com.compras.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConexionDB {
+public class DatabaseConfig {
     private static final String URL = "jdbc:sqlserver://26.134.176.109:1433;" +
             "database=Modulo_Compras;" +
             "user=sa;" +

@@ -1,11 +1,11 @@
-package com.compras.gui.menus;
+package com.compras.ui.menu;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MaestrosMenu {
+public class MasterMenu {
 
     public JMenu menuMaestros() {
 
@@ -159,4 +159,3 @@ public class MaestrosMenu {
         frame.setVisible(true);
     }
 }
-

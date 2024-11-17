@@ -1,13 +1,13 @@
 package com.compras.dao;
 
-import com.compras.db.ConexionDB;
-
 import java.sql.*;
+
+import com.compras.config.DatabaseConfig;
 
 public class UsuarioDAO {
     private final Connection conexion;
 
-    public UsuarioDAO(ConexionDB conexionDB) {
+    public UsuarioDAO(DatabaseConfig conexionDB) {
         this.conexion = conexionDB.conectar();
     }
 

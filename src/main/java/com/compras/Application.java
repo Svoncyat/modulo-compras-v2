@@ -1,19 +1,17 @@
 package com.compras;
 
 import javax.swing.*;
-import java.awt.*;
 
-import com.compras.db.ConexionDB;
-import com.compras.gui.AutenticacionMenu;
+import com.compras.config.DatabaseConfig;
+import com.compras.ui.LoginFrame;
 
-public class Main extends JFrame {
+public class Application extends JFrame {
 
     public static void main(String[] args) {
-        ConexionDB conexion = new ConexionDB();
-        if (conexion.conectar() != null) {
-            AutenticacionMenu app = new AutenticacionMenu(conexion);
+        DatabaseConfig conexion = new DatabaseConfig();
+        if (conexion.conectar() != null) {  
+            LoginFrame app = new LoginFrame(conexion);
             app.setVisible(true);
-            app.setSize(315, 175);
             app.setDefaultCloseOperation(EXIT_ON_CLOSE);
             app.setLocationRelativeTo(null);
         } else {

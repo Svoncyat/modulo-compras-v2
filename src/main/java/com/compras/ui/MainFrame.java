@@ -1,16 +1,16 @@
-package com.compras.gui;
+package com.compras.ui;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PrincipalMenu extends JFrame {
-    public PrincipalMenu() {
+public class MainFrame extends JFrame {
+    public MainFrame() {
         super("Módulo Compras");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(null);
 
-        BarraMenu barramenu = new BarraMenu();
+        MenuBar barramenu = new MenuBar();
         setJMenuBar(barramenu.inicializarBarraMenu());
 
         JPanel mainPanel = new JPanel();

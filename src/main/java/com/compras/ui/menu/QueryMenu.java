@@ -1,8 +1,8 @@
-package com.compras.gui.menus;
+package com.compras.ui.menu;
 
 import javax.swing.JMenu;
 
-public class ConsultasMenu {
+public class QueryMenu {
     public JMenu menuConsultas() {
         JMenu consultas = new JMenu("Consultas");
 

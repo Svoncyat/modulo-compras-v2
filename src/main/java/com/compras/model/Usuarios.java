@@ -1,4 +1,4 @@
-package com.compras.models;
+package com.compras.model;
 
 public class Usuarios {
     private int id;

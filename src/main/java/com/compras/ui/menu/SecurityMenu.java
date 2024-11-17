@@ -1,4 +1,4 @@
-package com.compras.gui.menus;
+package com.compras.ui.menu;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -7,14 +7,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-public class SeguridadMenu {
+public class SecurityMenu {
 
     public JMenu menuSeguridad() {
         JMenu seguridad = new JMenu("Seguridad");
 
         JMenu usuarios = new JMenu("Usuarios");
-        
         JMenuItem agregarUsuario = new JMenuItem("Agregar usuario");
         JMenuItem eliminarUsuario = new JMenuItem("Eliminar Usuario");
         JMenuItem restablecerContrasena = new JMenuItem("Restablecer contraseña");
@@ -24,7 +22,7 @@ public class SeguridadMenu {
         usuarios.add(restablecerContrasena);
 
         seguridad.add(usuarios);
-        
+
         agregarUsuario.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +53,7 @@ public class SeguridadMenu {
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
         panel.add(new JLabel("Nuevo usuario: "));
         panel.add(new JTextField());
         panel.add(new JLabel("Contraseña: "));
@@ -75,7 +73,7 @@ public class SeguridadMenu {
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
-        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
         panel.add(new JLabel("Nombre del usuario: "));
         panel.add(new JTextField());
         panel.add(new JLabel());
@@ -91,7 +89,7 @@ public class SeguridadMenu {
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBorder(new EmptyBorder(5, 5, 5, 5));
         panel.add(new JLabel("Usuario: "));
         panel.add(new JTextField());
         panel.add(new JLabel("Contraseña actual: "));

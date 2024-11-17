@@ -1,18 +1,17 @@
-package com.compras.gui;
+package com.compras.ui;
 
-import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import com.compras.gui.menus.*;
+import com.compras.ui.menu.*;
 
-public class BarraMenu extends JFrame {
+public class MenuBar {
     public JMenuBar inicializarBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
 
-        SeguridadMenu seguridad = new SeguridadMenu();
-        MaestrosMenu maestros = new MaestrosMenu();
-        ConsultasMenu consultas = new ConsultasMenu();
-        ReportesMenu reportes = new ReportesMenu();
+        SecurityMenu seguridad = new SecurityMenu();
+        MasterMenu maestros = new MasterMenu();
+        QueryMenu consultas = new QueryMenu();
+        ReportMenu reportes = new ReportMenu();
 
         menuBar.add(seguridad.menuSeguridad());
         menuBar.add(maestros.menuMaestros());
