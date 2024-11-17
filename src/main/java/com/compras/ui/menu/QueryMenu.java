@@ -1,9 +1,13 @@
 package com.compras.ui.menu;
 
-import javax.swing.JMenu;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class QueryMenu {
-    JMenu consultas = new JMenu("Consultas");
+public JMenu menuConsultas() {
+        JMenu consultas = new JMenu("Consultas");
 
         // Crear submenú de Consultar Artículos
         JMenuItem consultarArticulos = new JMenuItem("Consultar Artículos");
@@ -43,18 +47,5 @@ public class QueryMenu {
         frame.setVisible(true);
     }
 
-    // Método principal para probar la clase
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Menú de Consultas");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-
-        JMenuBar menuBar = new JMenuBar();
-        ConsultasMenu consultasMenu = new ConsultasMenu();
-        menuBar.add(consultasMenu.menuConsultas());
-
-        frame.setJMenuBar(menuBar);
-        frame.setVisible(true);
-    }
-
+    
+}
