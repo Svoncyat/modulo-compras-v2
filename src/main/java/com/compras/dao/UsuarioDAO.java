@@ -16,13 +16,13 @@ public class UsuarioDAO {
     }
 
     public boolean validarCredenciales(String usuario, String contrasena) {
-        String consulta = "SELECT is_admin FROM Usuarios WHERE username = ? AND password = ?";
+        String consulta = "SELECT esAdmin FROM Usuarios WHERE usuario = ? AND contrasena = ?";
         try (PreparedStatement ps = conexion.prepareStatement(consulta)) {
             ps.setString(1, usuario);
             ps.setString(2, contrasena);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.esAdmin = rs.getBoolean("is_admin");
+                this.esAdmin = rs.getBoolean("esAdmin");
                 this.setUsuarioActual(usuario);
                 return true;
             }
@@ -37,7 +37,7 @@ public class UsuarioDAO {
     }
 
     public Object[][] obtenerTodosLosUsuarios() {
-        String consulta = "SELECT id, username, password, is_admin FROM Usuarios";
+        String consulta = "SELECT id, usuario, contrasena, esAdmin FROM Usuarios";
         List<Object[]> listaUsuarios = new ArrayList<>();
         
         try (Statement stmt = conexion.createStatement();
@@ -46,9 +46,9 @@ public class UsuarioDAO {
             while (rs.next()) {
                 Object[] fila = new Object[4];
                 fila[0] = rs.getInt("id");
-                fila[1] = rs.getString("username");
+                fila[1] = rs.getString("usuario");
                 fila[2] = "********"; // Por seguridad no mostramos la contraseña real
-                fila[3] = rs.getBoolean("is_admin");
+                fila[3] = rs.getBoolean("esAdmin");
                 listaUsuarios.add(fila);
             }
             
@@ -67,7 +67,7 @@ public class UsuarioDAO {
     }
 
     public void agregarUsuario(String usuario, String contrasena, boolean esAdmin) throws SQLException {
-        String consulta = "INSERT INTO Usuarios (username, password, is_admin) VALUES (?, ?, ?)";
+        String consulta = "INSERT INTO Usuarios (usuario, contrasena, esAdmin) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(consulta)) {
             ps.setString(1, usuario);
             ps.setString(2, contrasena);
@@ -79,9 +79,9 @@ public class UsuarioDAO {
     public void modificarUsuario(int id, String usuario, String contrasena, boolean esAdmin) throws SQLException {
         String consulta;
         if (contrasena.isEmpty()) {
-            consulta = "UPDATE Usuarios SET username = ?, is_admin = ? WHERE id = ?";
+            consulta = "UPDATE Usuarios SET usuario = ?, esAdmin = ? WHERE id = ?";
         } else {
-            consulta = "UPDATE Usuarios SET username = ?, password = ?, is_admin = ? WHERE id = ?";
+            consulta = "UPDATE Usuarios SET usuario = ?, contrasena = ?, esAdmin = ? WHERE id = ?";
         }
         
         try (PreparedStatement ps = conexion.prepareStatement(consulta)) {
@@ -112,7 +112,7 @@ public class UsuarioDAO {
             return false;
         }
 
-        String consulta = "UPDATE Usuarios SET password = ? WHERE username = ? AND password = ?";
+        String consulta = "UPDATE Usuarios SET contrasena = ? WHERE usuario = ? AND contrasena = ?";
         try (PreparedStatement ps = conexion.prepareStatement(consulta)) {
             ps.setString(1, nuevaContrasena);
             ps.setString(2, usuario);

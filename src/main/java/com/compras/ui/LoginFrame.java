@@ -25,8 +25,8 @@ public class LoginFrame extends JFrame {
         this.usuarioDAO = new UsuarioDAO(conexionDB);
         
         // Inicializar componentes
-        tfUsuario = new JTextField(15); // 15 es el tamaño del campo de texto lo usamos para el metodo packet()
-        tfContrasena = new JPasswordField(15);
+        tfUsuario = new JTextField(20); // 15 es el tamaño del campo de texto lo usamos para el metodo packet()
+        tfContrasena = new JPasswordField(20);
         btnIngresar = new JButton("Ingresar");
         
         initializeUI();

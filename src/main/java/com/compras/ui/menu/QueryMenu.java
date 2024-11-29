@@ -1,12 +1,14 @@
 package com.compras.ui.menu;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class QueryMenu {
-public JMenu menuConsultas() {
+    public JMenu menuConsultas() {
         JMenu consultas = new JMenu("Consultas");
 
         // Crear submenú de Consultar Artículos
@@ -14,7 +16,7 @@ public JMenu menuConsultas() {
         consultarArticulos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mostrarFormularioConsultas();
+                tablaArticulos();
             }
         });
 
@@ -24,28 +26,47 @@ public JMenu menuConsultas() {
         return consultas;
     }
 
-    private void mostrarFormularioConsultas() {
-        JFrame frame = new JFrame("Artículos");
-        frame.setSize(300, 200);
-        frame.setLocationRelativeTo(null);
+    private void tablaArticulos() {
+        JDialog dialog = new JDialog(new JFrame(), "Consultar Artículos", true);
+        dialog.setSize(800, 500);
+        dialog.setLocationRelativeTo(null);
+        dialog.setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        panel.add(new JLabel("Nombre del Artículo:"));
-        panel.add(new JTextField());
-        panel.add(new JLabel("Stock del Artículo:"));
-        panel.add(new JTextField());
-        panel.add(new JLabel("Descripción del Artículo:"));
-        panel.add(new JTextField());
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel botones = new JPanel(new GridLayout(1, 3, 5, 0));
-        botones.add(new JButton("Agregar Artículo"));
-        botones.add(new JButton("Eliminar Artículo"));
-        botones.add(new JButton("Actualizar Artículo"));
+        String[] columnas = { "ID", "Nombre Artículo", "Stock", "Estado", "Proveedor", "Comprador" };
+        Object[][] datos = new Object[0][0];
+        JTable tabla = new JTable(datos, columnas);
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(botones, BorderLayout.SOUTH);
-        frame.setVisible(true);
+        // Panel superior con BorderLayout para separar filtros y botón
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+
+        // Panel izquierdo para filtros
+        JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblFiltrar = new JLabel("Filtrar por: ");
+        JComboBox<String> cboFiltrar = new JComboBox<>(
+                new String[] { "Nombre Artículo", "Stock", "Estado", "Proveedor", "Comprador" });
+        panelFiltros.add(lblFiltrar);
+        panelFiltros.add(cboFiltrar);
+        panelSuperior.add(panelFiltros, BorderLayout.WEST);
+
+        JLabel lblOrdenar = new JLabel("Ordenar por: ");
+        JComboBox<String> cboOrdenar = new JComboBox<>(new String[] { "Mayor a menor", "Menor a Mayor" });
+        panelFiltros.add(lblOrdenar);
+        panelFiltros.add(cboOrdenar);
+        panelSuperior.add(panelFiltros, BorderLayout.WEST);
+
+        // Panel derecho para botón
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnFiltrar = new JButton("Aplicar filtros");
+        panelBoton.add(btnFiltrar);
+        panelSuperior.add(panelBoton, BorderLayout.EAST);
+
+        mainPanel.add(panelSuperior, BorderLayout.NORTH);
+        dialog.add(mainPanel);
+        dialog.setVisible(true);
     }
-
-    
 }

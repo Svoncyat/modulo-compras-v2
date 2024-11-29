@@ -1,50 +1,90 @@
 package com.compras.ui.menu;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import com.toedter.calendar.JDateChooser;
 
 public class ReportMenu {
     public JMenu menuReportes() {
         JMenu reportes = new JMenu("Reportes");
 
-        // Crear submenú de Generar Reportes
         JMenuItem generarReporte = new JMenuItem("Generar Reportes");
         generarReporte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mostrarFormularioReportes();
+                tablaReportes();
             }
         });
 
-        // Agregar la opción al menú de reportes
         reportes.add(generarReporte);
 
         return reportes;
     }
 
-    private void mostrarFormularioReportes() {
-        JFrame frame = new JFrame("Reportes");
-        frame.setSize(300, 200);
-        frame.setLocationRelativeTo(null);
+    private void tablaReportes() {
+        JDialog dialog = new JDialog(new JFrame(), "Reportes", true);
+        dialog.setSize(800, 500);
+        dialog.setLocationRelativeTo(null);
+        dialog.setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        panel.add(new JLabel("Tipo de Reporte:"));
-        panel.add(new JTextField());
-        panel.add(new JLabel("Fecha de Inicio:"));
-        panel.add(new JTextField());
-        panel.add(new JLabel("Fecha de Fin:"));
-        panel.add(new JTextField());
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel botones = new JPanel(new GridLayout(1, 3, 5, 0));
-        botones.add(new JButton("Generar Reporte"));
-        botones.add(new JButton("Exportar Reporte"));
-        botones.add(new JButton("Cerrar"));
+        // Panel central para la tabla
+        JPanel panelCentral = new JPanel(new BorderLayout(10, 10));
+        
+        // Configuración de la tabla
+        String[] columnas = { "ID", "Nombre Artículo", "Stock", "Fecha de Ingreso", "Proveedor", "Comprador" };
+        Object[][] datos = new Object[0][0];
+        JTable tabla = new JTable(datos, columnas);
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
 
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(botones, BorderLayout.SOUTH);
-        frame.setVisible(true);
+        // Panel superior para los filtros de fecha
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        
+        // Panel izquierdo para las fechas
+        JPanel panelFechas = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        
+        // Selector de fecha inicial
+        JPanel panelFechaInicio = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblFechaInicio = new JLabel("Fecha de Inicio: ");
+        JDateChooser dateChooserInicio = new JDateChooser();
+        dateChooserInicio.setPreferredSize(new Dimension(130, 25));
+        panelFechaInicio.add(lblFechaInicio);
+        panelFechaInicio.add(dateChooserInicio);
+        
+        // Selector de fecha final
+        JPanel panelFechaFin = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblFechaFin = new JLabel("Fecha de Fin: ");
+        JDateChooser dateChooserFin = new JDateChooser();
+        dateChooserFin.setPreferredSize(new Dimension(130, 25));
+        panelFechaFin.add(lblFechaFin);
+        panelFechaFin.add(dateChooserFin);
+        
+        // Botón de generar reporte
+        JButton btnReporte = new JButton("Generar Reporte");
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBoton.add(btnReporte);
+        
+        // Agregar componentes al panel de fechas
+        panelFechas.add(panelFechaInicio);
+        panelFechas.add(panelFechaFin);
+
+        // Agregar paneles al panel superior
+        panelSuperior.add(panelFechas, BorderLayout.WEST);
+        panelSuperior.add(panelBoton, BorderLayout.EAST);
+
+        // Agregar paneles al panel principal
+        mainPanel.add(panelSuperior, BorderLayout.NORTH);
+        mainPanel.add(panelCentral, BorderLayout.CENTER);
+        
+        dialog.add(mainPanel);
+        dialog.setVisible(true);
     }
 }
-

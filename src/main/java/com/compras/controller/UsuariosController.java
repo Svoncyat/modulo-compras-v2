@@ -171,7 +171,7 @@ public class UsuariosController {
         };
     }
 
-    public void configurarTabla() {
+    public void configurarTablaUsuarios() {
         tabla.setDefaultEditor(Object.class, null);
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -216,7 +216,7 @@ public class UsuariosController {
     private void actualizarTabla() {
         Object[][] nuevosDatos = usuarioDAO.obtenerTodosLosUsuarios();
         tabla.setModel(new DefaultTableModel(nuevosDatos, new String[] { "ID", "Usuario", "Contraseña", "Admin" }));
-        configurarTabla();
+        configurarTablaUsuarios();
     }
 
     // Método auxiliar para limpiar campos

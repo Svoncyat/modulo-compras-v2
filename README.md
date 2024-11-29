@@ -11,8 +11,9 @@
 - Compradores
 - Transacciones
   - Orden de compra _(De quien y a quien le estoy comprando)_
-      - Estado _(*emitido / *recibido / *backorder o parcialmente recibido)_
-  - Ingreso (*depende de la orden de compra) **+ Stock**
+      - Estado _(*emitido)_
+  - Ingreso (*depende de la orden de compra) **+ Stock**  
+  _(*recibido / *backorder o parcialmente recibido)_ 
   - Devolución (indicar proveedor, detalle) **- Stock**
 
 **Consultas**

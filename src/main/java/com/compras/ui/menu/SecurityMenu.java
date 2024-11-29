@@ -127,7 +127,7 @@ public class SecurityMenu {
         UsuariosController controller = new UsuariosController(
                 usuarioDAO, tabla, txtUsuario, txtContrasena, chkAdministrador);
         
-        controller.configurarTabla();
+        controller.configurarTablaUsuarios();
         btnAgregar.addActionListener(controller.getAgregarListener());
         btnModificar.addActionListener(controller.getModificarListener());
         btnEliminar.addActionListener(controller.getEliminarListener());
@@ -152,7 +152,7 @@ public class SecurityMenu {
         JPasswordField txtContrasenaActual = new JPasswordField();
         JPasswordField txtNuevaContrasena = new JPasswordField();
         
-        panel.add(new JLabel("Cambiar contraseña: "));
+        panel.add(new JLabel("Cambiar contraseña"));
         panel.add(new JLabel());
         panel.add(new JLabel("Contraseña actual: "));
         panel.add(txtContrasenaActual);
