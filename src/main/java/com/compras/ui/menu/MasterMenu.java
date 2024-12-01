@@ -10,6 +10,19 @@ import com.compras.model.Proveedor;
 import com.compras.model.Comprador;
 import com.compras.model.OrdenCompra;
 
+import com.compras.dao.ArticulosDAO;
+import com.compras.controller.ArticulosController;
+import com.compras.dao.ProveedoresDAO;
+import com.compras.controller.ProveedoresController;
+import com.compras.dao.CompradoresDAO;
+import com.compras.controller.CompradoresController;
+import com.compras.dao.OrdenCompraDAO;
+import com.compras.controller.OrdenCompraController;
+import com.compras.dao.IngresoDAO;
+import com.compras.controller.IngresoController;
+import com.compras.dao.DevolucionDAO;
+import com.compras.controller.DevolucionController;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -114,7 +127,7 @@ public class MasterMenu {
 
         // Campos de edición
         JTextField txtNombre = new JTextField(20);
-        JTextField txtStock = new JTextField(20);
+        JTextField txtStock = new JTextField("0",20);
         JTextArea txtDescripcion = new JTextArea(9, 20);
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
@@ -164,7 +177,7 @@ public class MasterMenu {
         dialog.add(mainPanel);
 
         // Crear el controlador
-        /* ArticulosController controller = new ArticulosController(
+        ArticulosController controller = new ArticulosController(
                 new ArticulosDAO(), tabla, txtNombre, txtStock, txtDescripcion);
         
         controller.configurarTabla();
@@ -172,7 +185,7 @@ public class MasterMenu {
         btnModificar.addActionListener(controller.getModificarListener());
         btnEliminar.addActionListener(controller.getEliminarListener());
         tabla.getSelectionModel().addListSelectionListener(
-                controller.getTablaSelectionListener()); */
+                controller.getTablaSelectionListener());
 
         dialog.setVisible(true);
     }
@@ -245,7 +258,7 @@ public class MasterMenu {
         dialog.add(mainPanel);
 
         // Espacio para el controlador (comentado como referencia)
-        /* ProveedoresController controller = new ProveedoresController(
+        ProveedoresController controller = new ProveedoresController(
                 new ProveedoresDAO(), tabla, txtNombre, txtContacto);
         
         controller.configurarTabla();
@@ -253,7 +266,7 @@ public class MasterMenu {
         btnModificar.addActionListener(controller.getModificarListener());
         btnEliminar.addActionListener(controller.getEliminarListener());
         tabla.getSelectionModel().addListSelectionListener(
-                controller.getTablaSelectionListener()); */
+                controller.getTablaSelectionListener());
 
         dialog.setVisible(true);
     }
@@ -326,7 +339,7 @@ public class MasterMenu {
         dialog.add(mainPanel);
 
         // Espacio para el controlador (comentado como referencia)
-        /* CompradoresController controller = new CompradoresController(
+        CompradoresController controller = new CompradoresController(
                 new CompradoresDAO(), tabla, txtNombre, txtContacto);
         
         controller.configurarTabla();
@@ -334,14 +347,14 @@ public class MasterMenu {
         btnModificar.addActionListener(controller.getModificarListener());
         btnEliminar.addActionListener(controller.getEliminarListener());
         tabla.getSelectionModel().addListSelectionListener(
-                controller.getTablaSelectionListener()); */
+                controller.getTablaSelectionListener());
 
         dialog.setVisible(true);
     }
 
     private void administrarOrdenCompra() {
         JDialog dialog = new JDialog(new JFrame(), "Administrar Orden de Compra", true);
-        dialog.setSize(1000, 600);
+        dialog.setSize(900, 400);
         dialog.setLocationRelativeTo(null);
         dialog.setResizable(false);
 
@@ -358,16 +371,23 @@ public class MasterMenu {
         
         // Primera fila
         gbc.gridx = 0; gbc.gridy = 0;
-        panelOrden.add(new JLabel("Número de orden:"), gbc);
+        JButton btnNuevaOrden = new JButton("Nueva Orden");
+        panelOrden.add(btnNuevaOrden, gbc);
+
         gbc.gridx = 1;
-        JTextField txtNumero = new JTextField(10);
-        txtNumero.setEditable(false);
-        txtNumero.setFocusable(false);
-        panelOrden.add(txtNumero, gbc);
+        JButton btnEliminarOrden = new JButton("Eliminar Orden");
+        panelOrden.add(btnEliminarOrden, gbc);
 
         gbc.gridx = 2;
-        panelOrden.add(new JLabel("Fecha:"), gbc);
+        panelOrden.add(new JLabel("Número de orden:"), gbc);
         gbc.gridx = 3;
+        JComboBox<String> cboNumeroOrden = new JComboBox<>();
+        cboNumeroOrden.setPreferredSize(new Dimension(120, 25));
+        panelOrden.add(cboNumeroOrden, gbc);
+
+        gbc.gridx = 4;
+        panelOrden.add(new JLabel("Fecha:"), gbc);
+        gbc.gridx = 5;
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setPreferredSize(new Dimension(120, 25));
         panelOrden.add(dateChooser, gbc);
@@ -389,6 +409,8 @@ public class MasterMenu {
         panelOrden.add(new JLabel("Estado:"), gbc);
         gbc.gridx = 5;
         JComboBox<String> cboEstado = new JComboBox<>(new String[]{"Emitido", "Recibido", "Backorder"});
+        // Emitido es el estado por defecto
+        cboEstado.setEnabled(false);
         panelOrden.add(cboEstado, gbc);
 
         // Panel central para el detalle
@@ -408,9 +430,9 @@ public class MasterMenu {
         // Panel izquierdo para campos
         JPanel panelCampos = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JComboBox<Articulo> cboArticulo = new JComboBox<>();
-        cboArticulo.setPreferredSize(new Dimension(200, 25));
-        JTextField txtCantidad = new JTextField(10);
-        JTextField txtPrecioUnitario = new JTextField(10);
+        cboArticulo.setPreferredSize(new Dimension(150, 25));
+        JTextField txtCantidad = new JTextField(5);
+        JTextField txtPrecioUnitario = new JTextField(5);
 
         panelCampos.add(new JLabel("Artículo:"));
         panelCampos.add(cboArticulo);
@@ -456,23 +478,25 @@ public class MasterMenu {
 
         dialog.add(mainPanel);
 
-        // Espacio para el controlador (comentado como referencia)
-        /* OrdenCompraController controller = new OrdenCompraController(
-                new OrdenCompraDAO(), 
-                txtNumero, dateChooser, cboProveedor, cboComprador, cboEstado,
-                tablaDetalle, cboArticulo, txtCantidad, txtPrecioUnitario, txtTotal);
-        
+        // Inicializar el controlador con todos los componentes
+        OrdenCompraController controller = new OrdenCompraController(
+            new OrdenCompraDAO(), 
+            cboNumeroOrden, dateChooser, cboProveedor, cboComprador, cboEstado,
+            tablaDetalle, cboArticulo, txtCantidad, txtPrecioUnitario, txtTotal
+        );
+
         btnAgregarItem.addActionListener(controller.getAgregarItemListener());
         btnQuitarItem.addActionListener(controller.getQuitarItemListener());
         btnGuardar.addActionListener(controller.getGuardarListener());
-        btnCancelar.addActionListener(e -> dialog.dispose()); */
+        btnNuevaOrden.addActionListener(controller.getNuevaOrdenListener());
+        btnEliminarOrden.addActionListener(controller.getEliminarOrdenListener());
 
         dialog.setVisible(true);
     }
 
     private void administrarIngreso() {
         JDialog dialog = new JDialog(new JFrame(), "Administrar Ingreso", true);
-        dialog.setSize(800, 500);
+        dialog.setSize(800, 400);
         dialog.setLocationRelativeTo(null);
         dialog.setResizable(false);
 
@@ -555,14 +579,21 @@ public class MasterMenu {
 
         mainPanel.add(panelCentral, BorderLayout.CENTER);
         mainPanel.add(panelDerecho, BorderLayout.EAST);
-        
         dialog.add(mainPanel);
+
+        IngresoController controller = new IngresoController(
+            new IngresoDAO(), tabla, cboOrdenCompra, txtArticulo, txtCantidadRecibida, txtTotal, txtTotalRecibido
+        );
+
+        btnModificar.addActionListener(controller.getModificarListener());
+        btnProcesar.addActionListener(controller.getProcesarListener());
+
         dialog.setVisible(true);
     }
 
     private void administrarDevolucion() {
         JDialog dialog = new JDialog(new JFrame(), "Administrar Devolución", true);
-        dialog.setSize(800, 500);
+        dialog.setSize(800, 400);
         dialog.setLocationRelativeTo(null);
         dialog.setResizable(false);
 
@@ -573,7 +604,7 @@ public class MasterMenu {
         JPanel panelCentral = new JPanel(new BorderLayout(10, 10));
         
         // Tabla
-        String[] columnas = { "ID", "Artículo", "Cantidad Solicitada", "Cantidad a Devolver" };
+        String[] columnas = { "ID", "Artículo", "Cantidad Recibida", "Cantidad a Devolver" };
         Object[][] datos = new Object[0][0];
         JTable tabla = new JTable(datos, columnas);
         JScrollPane scrollPane = new JScrollPane(tabla);
@@ -629,6 +660,10 @@ public class MasterMenu {
         mainPanel.add(panelCentral, BorderLayout.CENTER);
         mainPanel.add(panelDerecho, BorderLayout.EAST);
         
+        /* DevolucionController controller = new DevolucionController(new DevolucionDAO(), tabla, cboProveedor, txtArticulo, txtCantidadRecibida);
+        btnModificar.addActionListener(controller.getModificarListener());      
+        btnProcesar.addActionListener(controller.getProcesarListener()); */
+
         dialog.add(mainPanel);
         dialog.setVisible(true);
     }

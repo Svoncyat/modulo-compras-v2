@@ -35,5 +35,8 @@ public class Comprador {
         this.contacto = contacto;
     }
 
-    
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

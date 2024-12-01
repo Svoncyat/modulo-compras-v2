@@ -35,4 +35,9 @@ public class Proveedor {
         this.contacto = contacto;
     }
     
+    @Override
+    public String toString() {
+        return nombre;
+    }
+
 }

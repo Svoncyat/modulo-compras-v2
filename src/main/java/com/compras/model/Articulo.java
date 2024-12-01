@@ -4,14 +4,12 @@ public class Articulo {
     private int id;
     private String nombre;
     private int stock;
-    private double precioUnitario;
     private String descripcion;
-    
-    public Articulo(int id, String nombre, int stock, double precioUnitario, String descripcion) {
+
+    public Articulo(int id, String nombre, int stock, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.stock = stock;
-        this.precioUnitario = precioUnitario;
         this.descripcion = descripcion;
     }
 
@@ -39,14 +37,6 @@ public class Articulo {
         this.stock = stock;
     }
 
-    public double getPrecioUnitario() {
-        return precioUnitario;
-    }
-
-    public void setPrecioUnitario(double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -55,5 +45,9 @@ public class Articulo {
         this.descripcion = descripcion;
     }
 
-    
+    @Override
+    public String toString() {
+        return nombre;
+    }
+
 }

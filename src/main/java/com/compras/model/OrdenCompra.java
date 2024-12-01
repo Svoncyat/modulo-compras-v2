@@ -9,17 +9,19 @@ public class OrdenCompra {
     private Proveedor proveedor;
     private Comprador comprador;
     private String estado;
+    private double precioUnitario;
     private List<DetalleOrdenCompra> detalleOrdenCompra;
 
     public OrdenCompra(int id, String numero, Date fecha, Proveedor proveedor, Comprador comprador, String estado,
-            List<DetalleOrdenCompra> detalleOrdenCompra) {
+            double precioUnitario) {
         this.id = id;
         this.numero = numero;
         this.fecha = fecha;
         this.proveedor = proveedor;
         this.comprador = comprador;
         this.estado = estado;
-        this.detalleOrdenCompra = detalleOrdenCompra;
+        this.precioUnitario = precioUnitario;
+        this.detalleOrdenCompra = new ArrayList<>();
     }
 
     public int getId() {
@@ -70,6 +72,14 @@ public class OrdenCompra {
         this.estado = estado;
     }
 
+    public double getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public void setPrecioUnitario(double precioUnitario) {
+        this.precioUnitario = precioUnitario;
+    }
+
     public List<DetalleOrdenCompra> getDetalleOrdenCompra() {
         return detalleOrdenCompra;
     }
@@ -78,7 +88,8 @@ public class OrdenCompra {
         this.detalleOrdenCompra = detalleOrdenCompra;
     }
 
-    public double calcularTotal() {
-        return detalleOrdenCompra.stream().mapToDouble(DetalleOrdenCompra::getSubtotal).sum();
+    @Override
+    public String toString() {
+        return numero + " - " + proveedor.getNombre() + " (" + fecha + ")";
     }
 }

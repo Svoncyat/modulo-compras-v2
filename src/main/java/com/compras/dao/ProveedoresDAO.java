@@ -1,73 +1,70 @@
 package com.compras.dao;
 
 import com.compras.config.DatabaseConfig;
-import com.compras.model.Articulo;
+import com.compras.model.Proveedor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticulosDAO {
+public class ProveedoresDAO {
     private DatabaseConfig dbConfig = new DatabaseConfig();
 
-    public List<Articulo> obtenerTodos() {
-        List<Articulo> articulos = new ArrayList<>();
-        String sql = "SELECT id, nombre, stock, descripcion FROM Articulo";
+    public List<Proveedor> obtenerTodos() {
+        List<Proveedor> proveedores = new ArrayList<>();
+        String sql = "SELECT id, nombre, contacto FROM Proveedor";
         
         try (Connection conn = dbConfig.conectar();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             
             while (rs.next()) {
-                articulos.add(new Articulo(
+                proveedores.add(new Proveedor(
                     rs.getInt("id"),
                     rs.getString("nombre"),
-                    rs.getInt("stock"),
-                    rs.getString("descripcion")
+                    rs.getString("contacto")
                 ));
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener artículos: " + e.getMessage());
+            System.err.println("Error al obtener proveedores: " + e.getMessage());
         }
-        return articulos;
+        return proveedores;
     }
 
-    public boolean insertar(Articulo articulo) {
-        String sql = "INSERT INTO Articulo (nombre, stock, descripcion) VALUES (?, ?, ?)";
+    public boolean insertar(Proveedor proveedor) {
+        String sql = "INSERT INTO Proveedor (nombre, contacto) VALUES (?, ?)";
         
         try (Connection conn = dbConfig.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, articulo.getNombre());
-            pstmt.setInt(2, articulo.getStock());
-            pstmt.setString(3, articulo.getDescripcion());
+            pstmt.setString(1, proveedor.getNombre());
+            pstmt.setString(2, proveedor.getContacto());
             
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al insertar artículo: " + e.getMessage());
+            System.err.println("Error al insertar proveedor: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean actualizar(Articulo articulo) {
-        String sql = "UPDATE Articulo SET nombre = ?, stock = ?, descripcion = ? WHERE id = ?";
+    public boolean actualizar(Proveedor proveedor) {
+        String sql = "UPDATE Proveedor SET nombre = ?, contacto = ? WHERE id = ?";
         
         try (Connection conn = dbConfig.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, articulo.getNombre());
-            pstmt.setInt(2, articulo.getStock());
-            pstmt.setString(3, articulo.getDescripcion());
-            pstmt.setInt(4, articulo.getId());
+            pstmt.setString(1, proveedor.getNombre());
+            pstmt.setString(2, proveedor.getContacto());
+            pstmt.setInt(3, proveedor.getId());
             
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al actualizar artículo: " + e.getMessage());
+            System.err.println("Error al actualizar proveedor: " + e.getMessage());
             return false;
         }
     }
 
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM Articulo WHERE id = ?";
+        String sql = "DELETE FROM Proveedor WHERE id = ?";
         
         try (Connection conn = dbConfig.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -75,7 +72,7 @@ public class ArticulosDAO {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al eliminar artículo: " + e.getMessage());
+            System.err.println("Error al eliminar proveedor: " + e.getMessage());
             return false;
         }
     }
