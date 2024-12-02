@@ -13,20 +13,25 @@ public class ReportMenu {
     public JMenu menuReportes() {
         JMenu reportes = new JMenu("Reportes");
 
-        JMenuItem generarReporte = new JMenuItem("Generar Reportes");
-        generarReporte.addActionListener(new ActionListener() {
+        JMenu generarReportes = new JMenu("Generar Reportes");
+        JMenuItem reporteStock = new JMenuItem("Reporte de Stock");
+        JMenuItem reporteOrdenes = new JMenuItem("Reporte de Ordenes");
+
+        reporteStock.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tablaReportes();
+                reporteStock();
             }
         });
 
-        reportes.add(generarReporte);
+        reportes.add(generarReportes);
+        generarReportes.add(reporteStock);
+        generarReportes.add(reporteOrdenes);
 
         return reportes;
     }
 
-    private void tablaReportes() {
+    private void reporteStock() {
         JDialog dialog = new JDialog(new JFrame(), "Reportes", true);
         dialog.setSize(800, 500);
         dialog.setLocationRelativeTo(null);

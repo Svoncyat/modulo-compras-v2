@@ -24,6 +24,10 @@ public class OrdenCompra {
         this.detalleOrdenCompra = new ArrayList<>();
     }
 
+    public OrdenCompra() {
+        this.detalleOrdenCompra = new ArrayList<>();
+    }
+
     public int getId() {
         return id;
     }

@@ -79,4 +79,27 @@ public class ArticulosDAO {
             return false;
         }
     }
+
+    public Articulo obtenerPorId(int id) {
+        String sql = "SELECT id, nombre, stock, descripcion FROM Articulo WHERE id = ?";
+        
+        try (Connection conn = dbConfig.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Articulo(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getInt("stock"),
+                    rs.getString("descripcion")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener artículo por ID: " + e.getMessage());
+        }
+        return null;
+    }
 }

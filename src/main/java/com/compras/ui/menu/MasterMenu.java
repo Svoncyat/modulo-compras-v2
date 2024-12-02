@@ -128,7 +128,7 @@ public class MasterMenu {
         // Campos de edición
         JTextField txtNombre = new JTextField(20);
         JTextField txtStock = new JTextField("0",20);
-        JTextArea txtDescripcion = new JTextArea(9, 20);
+        JTextArea txtDescripcion = new JTextArea("Sin descripción", 9, 20);
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
         JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
@@ -660,9 +660,11 @@ public class MasterMenu {
         mainPanel.add(panelCentral, BorderLayout.CENTER);
         mainPanel.add(panelDerecho, BorderLayout.EAST);
         
-        /* DevolucionController controller = new DevolucionController(new DevolucionDAO(), tabla, cboProveedor, txtArticulo, txtCantidadRecibida);
+        DevolucionController controller = new DevolucionController(
+            new DevolucionDAO(), tabla, cboProveedor, txtArticulo, txtCantidadRecibida
+        );
         btnModificar.addActionListener(controller.getModificarListener());      
-        btnProcesar.addActionListener(controller.getProcesarListener()); */
+        btnProcesar.addActionListener(controller.getProcesarListener());
 
         dialog.add(mainPanel);
         dialog.setVisible(true);

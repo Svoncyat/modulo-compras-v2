@@ -71,9 +71,11 @@ CREATE TABLE Devolucion (
     id INT PRIMARY KEY IDENTITY(1,1),
     ordenCompraId INT NOT NULL,
     proveedorId INT NOT NULL,
+    articuloId INT NOT NULL,
     cantidadDevuelta INT NOT NULL,
     fechaDevolucion DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_Devolucion_OrdenCompra FOREIGN KEY (ordenCompraId) REFERENCES OrdenCompra(id),
     CONSTRAINT FK_Devolucion_Proveedor FOREIGN KEY (proveedorId) REFERENCES Proveedor(id),
+    CONSTRAINT FK_Devolucion_Articulo FOREIGN KEY (articuloId) REFERENCES Articulo(id),
     CONSTRAINT CHK_CantidadDevuelta CHECK (cantidadDevuelta > 0)
 );

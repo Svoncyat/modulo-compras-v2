@@ -76,4 +76,26 @@ public class ProveedoresDAO {
             return false;
         }
     }
+
+    public Proveedor obtenerPorId(int id) {
+        String sql = "SELECT id, nombre, contacto FROM Proveedor WHERE id = ?";
+        
+        try (Connection conn = dbConfig.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Proveedor(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getString("contacto")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener proveedor por ID: " + e.getMessage());
+        }
+        return null;
+    }
 }
