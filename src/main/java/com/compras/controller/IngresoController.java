@@ -166,14 +166,11 @@ public class IngresoController {
                 return;
             }
 
-            // Verificar que al menos un artículo tenga cantidad recibida
             boolean hayIngresos = false;
             boolean hayPendientes = false;
             
-            // Crear y registrar el ingreso
             Ingreso ingreso = new Ingreso(0, orden);
             
-            // Recorrer la tabla para obtener las cantidades recibidas
             for (int i = 0; i < modelo.getRowCount(); i++) {
                 int articuloId = (int) modelo.getValueAt(i, 0);
                 int cantidadRecibida = (int) modelo.getValueAt(i, 3);
@@ -186,7 +183,6 @@ public class IngresoController {
                     hayPendientes = true;
                 }
                 
-                // Registrar la cantidad recibida para este artículo
                 ingreso.setCantidadRecibida(articuloId, cantidadRecibida);
             }
 
@@ -196,7 +192,6 @@ public class IngresoController {
                 return;
             }
 
-            // Determinar el estado de la orden
             String nuevoEstado = hayPendientes ? "Backorder" : "Recibido";
             orden.setEstado(nuevoEstado);
             

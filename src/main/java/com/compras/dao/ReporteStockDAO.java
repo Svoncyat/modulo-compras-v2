@@ -46,4 +46,30 @@ public class ReporteStockDAO {
         
         return datos;
     }
+
+    public Vector<Vector<Object>> obtenerTodosLosArticulos() {
+        Vector<Vector<Object>> datos = new Vector<>();
+        String query = """
+            SELECT a.id, a.nombre, a.stock
+            FROM Articulo a
+            ORDER BY a.id
+        """;
+
+        try (Connection conn = dbConfig.conectar();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            while (rs.next()) {
+                Vector<Object> fila = new Vector<>();
+                fila.add(rs.getInt("id"));
+                fila.add(rs.getString("nombre"));
+                fila.add(rs.getInt("stock"));
+                datos.add(fila);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return datos;
+    }
 }

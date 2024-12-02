@@ -36,8 +36,8 @@ public class QueryArticulosController {
         columnas.add("ID");
         columnas.add("Nombre Artículo");
         columnas.add("Stock");
-        columnas.add("Proveedor");
-        columnas.add("Comprador");
+        //columnas.add("Proveedor");
+        //columnas.add("Comprador");
 
         DefaultTableModel model = new DefaultTableModel(datos, columnas) {
             @Override

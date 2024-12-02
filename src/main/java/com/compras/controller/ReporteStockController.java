@@ -58,4 +58,17 @@ public class ReporteStockController {
             }
         };
     }
+
+    public void cargarDatosIniciales() {
+        Vector<String> columnas = new Vector<>();
+        columnas.add("ID");
+        columnas.add("Nombre Artículo");
+        columnas.add("Stock");
+
+        // Obtener todos los artículos sin filtro de fecha
+        Vector<Vector<Object>> datos = reporteDAO.obtenerTodosLosArticulos();
+        
+        DefaultTableModel model = new DefaultTableModel(datos, columnas);
+        tabla.setModel(model);
+    }
 }

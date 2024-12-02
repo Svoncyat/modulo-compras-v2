@@ -80,8 +80,8 @@ public class DevolucionController {
         for (OrdenCompra orden : ordenes) {
             if (orden.getProveedor().getId() == proveedor.getId()) {
                 for (DetalleOrdenCompra detalle : orden.getDetalleOrdenCompra()) {
-                    // Obtener la cantidad recibida para este artículo
-                    int cantidadRecibida = dao.obtenerCantidadRecibida(orden.getId(), detalle.getArticulo().getId());
+                    // Obtener la cantidad recibida individual para este artículo
+                    int cantidadRecibida = dao.obtenerCantidadRecibidaIndividual(orden.getId(), detalle.getArticulo().getId());
                     int cantidadDevuelta = dao.obtenerCantidadDevuelta(orden.getId(), detalle.getArticulo().getId());
                     int cantidadDisponible = cantidadRecibida - cantidadDevuelta;
                     
@@ -89,7 +89,7 @@ public class DevolucionController {
                         modelo.addRow(new Object[]{
                             detalle.getArticulo().getId(),
                             detalle.getArticulo().getNombre(),
-                            cantidadDisponible,  // Cantidad disponible para devolver
+                            cantidadRecibida,  // Mostramos la cantidad recibida individual
                             0  // Cantidad a devolver inicial
                         });
                     }

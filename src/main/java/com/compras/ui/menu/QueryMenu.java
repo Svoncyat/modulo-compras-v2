@@ -37,7 +37,7 @@ public class QueryMenu {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        String[] columnas = { "ID", "Nombre Artículo", "Stock", "Proveedor", "Comprador" };
+        String[] columnas = { "ID", "Nombre Artículo", "Stock"/* , "Proveedor", "Comprador" */ };
         Object[][] datos = new Object[0][0];
         JTable tabla = new JTable(datos, columnas);
         JScrollPane scrollPane = new JScrollPane(tabla);
@@ -50,7 +50,7 @@ public class QueryMenu {
         JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblFiltrar = new JLabel("Filtrar por: ");
         JComboBox<String> cboFiltrar = new JComboBox<>(
-                new String[] { "Nombre Artículo", "Stock", "Proveedor", "Comprador" });
+                new String[] { "Nombre Artículo", "Stock"/* , "Proveedor", "Comprador" */ });
         panelFiltros.add(lblFiltrar);
         panelFiltros.add(cboFiltrar);
         panelSuperior.add(panelFiltros, BorderLayout.WEST);

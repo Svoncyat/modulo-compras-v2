@@ -63,11 +63,11 @@ CREATE TABLE Ingreso (
     id INT PRIMARY KEY IDENTITY(1,1),
     ordenCompraId INT NOT NULL,
     articuloId INT NOT NULL,
-    cantidadRecibida INT NOT NULL,
+    cantidadRecibida INT DEFAULT 0, -- Valor predeterminado modificado a 0
     fechaIngreso DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_Ingreso_OrdenCompra FOREIGN KEY (ordenCompraId) REFERENCES OrdenCompra(id),
     CONSTRAINT FK_Ingreso_Articulo FOREIGN KEY (articuloId) REFERENCES Articulo(id),
-    CONSTRAINT CHK_CantidadRecibida CHECK (cantidadRecibida > 0)
+    CONSTRAINT CHK_CantidadRecibida CHECK (cantidadRecibida >= 0)
 );
 
 CREATE TABLE Devolucion (

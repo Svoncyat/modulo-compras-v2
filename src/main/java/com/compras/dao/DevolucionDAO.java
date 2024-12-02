@@ -152,4 +152,25 @@ public class DevolucionDAO {
         }
         return 0;
     }
+
+    public int obtenerCantidadRecibidaIndividual(int ordenCompraId, int articuloId) {
+        String sql = "SELECT cantidadRecibida " +
+                     "FROM Ingreso " +
+                     "WHERE ordenCompraId = ? AND articuloId = ?";
+        
+        try (Connection conn = dbConfig.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, ordenCompraId);
+            pstmt.setInt(2, articuloId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("cantidadRecibida");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener cantidad recibida individual: " + e.getMessage());
+        }
+        return 0;
+    }
 }

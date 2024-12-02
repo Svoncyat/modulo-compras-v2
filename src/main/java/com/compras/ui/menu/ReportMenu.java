@@ -107,6 +107,9 @@ public class ReportMenu {
         btnImprimir.addActionListener(controller.getBtnImprimirAction());
         btnReporte.addActionListener(controller.getBtnReporteAction());
 
+        // Cargar datos iniciales
+        controller.cargarDatosIniciales();
+
         dialog.add(mainPanel);
         dialog.setVisible(true);
     }
