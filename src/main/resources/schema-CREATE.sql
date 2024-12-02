@@ -46,12 +46,13 @@ CREATE TABLE OrdenCompra (
 );
 
 CREATE TABLE DetalleOrdenCompra (
+    id INT PRIMARY KEY IDENTITY(1,1),
     ordenCompraId INT NOT NULL,
     articuloId INT NOT NULL,
     cantidad INT NOT NULL,
     precioUnitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
-    CONSTRAINT PK_DetalleOrdenCompra PRIMARY KEY (ordenCompraId, articuloId),
+    CONSTRAINT UK_DetalleOrdenCompra UNIQUE (ordenCompraId, articuloId),
     CONSTRAINT FK_DetalleOrdenCompra_OrdenCompra FOREIGN KEY (ordenCompraId) REFERENCES OrdenCompra(id),
     CONSTRAINT FK_DetalleOrdenCompra_Articulo FOREIGN KEY (articuloId) REFERENCES Articulo(id),
     CONSTRAINT CHK_Cantidad CHECK (cantidad > 0),
@@ -61,9 +62,11 @@ CREATE TABLE DetalleOrdenCompra (
 CREATE TABLE Ingreso (
     id INT PRIMARY KEY IDENTITY(1,1),
     ordenCompraId INT NOT NULL,
+    articuloId INT NOT NULL,
     cantidadRecibida INT NOT NULL,
     fechaIngreso DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_Ingreso_OrdenCompra FOREIGN KEY (ordenCompraId) REFERENCES OrdenCompra(id),
+    CONSTRAINT FK_Ingreso_Articulo FOREIGN KEY (articuloId) REFERENCES Articulo(id),
     CONSTRAINT CHK_CantidadRecibida CHECK (cantidadRecibida > 0)
 );
 

@@ -26,3 +26,5 @@
 
 **O/C**
 Articulo - Cantidad - PU - Subtotal
+
+Arreglar Clave foranea

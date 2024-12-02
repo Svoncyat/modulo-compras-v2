@@ -7,9 +7,6 @@ import java.util.*;
 
 public class OrdenCompraDAO {
     private DatabaseConfig dbConfig = new DatabaseConfig();
-    private ProveedoresDAO proveedoresDAO = new ProveedoresDAO();
-    private CompradoresDAO compradoresDAO = new CompradoresDAO();
-    private ArticulosDAO articulosDAO = new ArticulosDAO();
 
     public String generarNumeroOrden() {
         String sql = "SELECT MAX(CAST(SUBSTRING(numero, 4, LEN(numero)) AS INT)) FROM OrdenCompra";
@@ -217,25 +214,39 @@ public class OrdenCompraDAO {
         return null;
     }
 
-    public boolean eliminar(String numero) {
-        String sqlDetalles = "DELETE FROM DetalleOrdenCompra WHERE ordenCompraId IN (SELECT id FROM OrdenCompra WHERE numero = ?)";
-        String sqlOrden = "DELETE FROM OrdenCompra WHERE numero = ?";
+    public boolean eliminar(String numeroOrden) {
+        String sqlEliminarIngreso = "DELETE FROM Ingreso WHERE ordenCompraId IN (SELECT id FROM OrdenCompra WHERE numero = ?)";
+        String sqlEliminarDevolucion = "DELETE FROM Devolucion WHERE ordenCompraId IN (SELECT id FROM OrdenCompra WHERE numero = ?)";
+        String sqlEliminarDetalles = "DELETE FROM DetalleOrdenCompra WHERE ordenCompraId IN (SELECT id FROM OrdenCompra WHERE numero = ?)";
+        String sqlEliminarOrden = "DELETE FROM OrdenCompra WHERE numero = ?";
         
         Connection conn = null;
         try {
             conn = dbConfig.conectar();
             conn.setAutoCommit(false);
             
-            // Primero eliminar los detalles
-            try (PreparedStatement pstmtDetalles = conn.prepareStatement(sqlDetalles)) {
-                pstmtDetalles.setString(1, numero);
-                pstmtDetalles.executeUpdate();
+            // Primero eliminar registros de Ingreso
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlEliminarIngreso)) {
+                pstmt.setString(1, numeroOrden);
+                pstmt.executeUpdate();
+            }
+
+            // Luego eliminar registros de Devolucion
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlEliminarDevolucion)) {
+                pstmt.setString(1, numeroOrden);
+                pstmt.executeUpdate();
             }
             
-            // Luego eliminar la orden
-            try (PreparedStatement pstmtOrden = conn.prepareStatement(sqlOrden)) {
-                pstmtOrden.setString(1, numero);
-                pstmtOrden.executeUpdate();
+            // Después eliminar los detalles
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlEliminarDetalles)) {
+                pstmt.setString(1, numeroOrden);
+                pstmt.executeUpdate();
+            }
+            
+            // Finalmente eliminar la orden
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlEliminarOrden)) {
+                pstmt.setString(1, numeroOrden);
+                pstmt.executeUpdate();
             }
             
             conn.commit();
@@ -250,12 +261,9 @@ public class OrdenCompraDAO {
             return false;
         } finally {
             try {
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                }
+                if (conn != null) conn.close();
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
         }
     }
@@ -307,5 +315,30 @@ public class OrdenCompraDAO {
             rs.getString("estado"),
             rs.getDouble("importeTotal")
         );
+    }
+
+    public boolean eliminarOrden(int ordenId) {
+        String sqlEliminarDetalles = "DELETE FROM DetalleOrdenCompra WHERE ordenCompraId = ?";
+        String sqlEliminarOrden = "DELETE FROM OrdenCompra WHERE id = ?";
+        
+        try (Connection conn = dbConfig.conectar()) {
+            conn.setAutoCommit(false);
+            
+            try (PreparedStatement pstmtDetalles = conn.prepareStatement(sqlEliminarDetalles)) {
+                pstmtDetalles.setInt(1, ordenId);
+                pstmtDetalles.executeUpdate();
+            }
+            
+            try (PreparedStatement pstmtOrden = conn.prepareStatement(sqlEliminarOrden)) {
+                pstmtOrden.setInt(1, ordenId);
+                pstmtOrden.executeUpdate();
+            }
+            
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar la orden de compra: " + e.getMessage());
+            return false;
+        }
     }
 }

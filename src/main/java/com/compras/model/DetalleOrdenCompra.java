@@ -5,12 +5,14 @@ public class DetalleOrdenCompra {
     private int cantidad;
     private double precioUnitario;
     private double subtotal;
+    private int cantidadRecibida;
     
     public DetalleOrdenCompra(Articulo articulo, int cantidad, double precioUnitario, double subtotal) {
         this.articulo = articulo;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.subtotal = subtotal;
+        this.cantidadRecibida = 0;
     }
 
     public Articulo getArticulo() {
@@ -43,6 +45,14 @@ public class DetalleOrdenCompra {
 
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public int getCantidadRecibida() {
+        return cantidadRecibida;
+    }
+
+    public void setCantidadRecibida(int cantidadRecibida) {
+        this.cantidadRecibida = cantidadRecibida;
     }
 
     public double calcularSubtotal() {

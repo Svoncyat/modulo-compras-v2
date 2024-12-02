@@ -3,6 +3,8 @@ package com.compras.ui.menu;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import com.compras.controller.QueryArticulosController;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +24,7 @@ public class QueryMenu {
 
         // Agregar la opción al menú de consultas
         consultas.add(consultarArticulos);
-
+        
         return consultas;
     }
 
@@ -35,7 +37,7 @@ public class QueryMenu {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        String[] columnas = { "ID", "Nombre Artículo", "Stock", "Estado", "Proveedor", "Comprador" };
+        String[] columnas = { "ID", "Nombre Artículo", "Stock", "Proveedor", "Comprador" };
         Object[][] datos = new Object[0][0];
         JTable tabla = new JTable(datos, columnas);
         JScrollPane scrollPane = new JScrollPane(tabla);
@@ -48,7 +50,7 @@ public class QueryMenu {
         JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblFiltrar = new JLabel("Filtrar por: ");
         JComboBox<String> cboFiltrar = new JComboBox<>(
-                new String[] { "Nombre Artículo", "Stock", "Estado", "Proveedor", "Comprador" });
+                new String[] { "Nombre Artículo", "Stock", "Proveedor", "Comprador" });
         panelFiltros.add(lblFiltrar);
         panelFiltros.add(cboFiltrar);
         panelSuperior.add(panelFiltros, BorderLayout.WEST);
@@ -64,6 +66,9 @@ public class QueryMenu {
         JButton btnFiltrar = new JButton("Aplicar filtros");
         panelBoton.add(btnFiltrar);
         panelSuperior.add(panelBoton, BorderLayout.EAST);
+
+        QueryArticulosController controller = new QueryArticulosController(tabla, cboFiltrar, cboOrdenar);
+        btnFiltrar.addActionListener(controller.getBtnFiltrarAction());
 
         mainPanel.add(panelSuperior, BorderLayout.NORTH);
         dialog.add(mainPanel);

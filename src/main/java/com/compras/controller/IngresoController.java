@@ -83,15 +83,16 @@ public class IngresoController {
         int totalRecibido = 0;
 
         for (DetalleOrdenCompra detalle : orden.getDetalleOrdenCompra()) {
-            // Obtener la cantidad ya recibida para este artículo
+            // Obtener la cantidad ya recibida para este artículo específico
             int cantidadRecibida = dao.obtenerCantidadRecibida(orden.getId(), detalle.getArticulo().getId());
             
             modelo.addRow(new Object[]{
                 detalle.getArticulo().getId(),
                 detalle.getArticulo().getNombre(),
                 detalle.getCantidad(),
-                cantidadRecibida  // Mostrar cantidad ya recibida
+                cantidadRecibida  // Mostrar la cantidad ya recibida desde la base de datos
             });
+            
             totalSolicitado += detalle.getCantidad();
             totalRecibido += cantidadRecibida;
         }
@@ -165,36 +166,46 @@ public class IngresoController {
                 return;
             }
 
-            // Verificar que todos los artículos tengan cantidad recibida
-            boolean todosRecibidos = true;
+            // Verificar que al menos un artículo tenga cantidad recibida
+            boolean hayIngresos = false;
+            boolean hayPendientes = false;
+            
+            // Crear y registrar el ingreso
+            Ingreso ingreso = new Ingreso(0, orden);
+            
+            // Recorrer la tabla para obtener las cantidades recibidas
             for (int i = 0; i < modelo.getRowCount(); i++) {
+                int articuloId = (int) modelo.getValueAt(i, 0);
                 int cantidadRecibida = (int) modelo.getValueAt(i, 3);
-                if (cantidadRecibida == 0) {
-                    todosRecibidos = false;
-                    break;
+                int cantidadSolicitada = (int) modelo.getValueAt(i, 2);
+                
+                if (cantidadRecibida > 0) {
+                    hayIngresos = true;
                 }
+                if (cantidadRecibida < cantidadSolicitada) {
+                    hayPendientes = true;
+                }
+                
+                // Registrar la cantidad recibida para este artículo
+                ingreso.setCantidadRecibida(articuloId, cantidadRecibida);
             }
 
-            if (!todosRecibidos) {
+            if (!hayIngresos) {
                 JOptionPane.showMessageDialog(null, 
-                    "Debe especificar la cantidad recibida para todos los artículos");
+                    "Debe especificar al menos una cantidad recibida mayor a cero");
                 return;
             }
 
             // Determinar el estado de la orden
-            int totalSolicitado = Integer.parseInt(txtTotal.getText());
-            int totalRecibido = Integer.parseInt(txtTotalRecibido.getText());
-            String nuevoEstado = totalSolicitado == totalRecibido ? "Recibido" : "Backorder";
+            String nuevoEstado = hayPendientes ? "Backorder" : "Recibido";
             orden.setEstado(nuevoEstado);
-
-            // Crear y registrar el ingreso
-            Ingreso ingreso = new Ingreso(0, orden, totalRecibido);
+            
             if (dao.registrarIngreso(ingreso)) {
                 JOptionPane.showMessageDialog(null, 
                     "Ingreso registrado exitosamente. Estado de la orden: " + nuevoEstado);
                 limpiarTodo();
                 cargarOrdenesCompra();
-                cboOrdenCompra.setSelectedItem(null); // Volver al estado vacío
+                cboOrdenCompra.setSelectedItem(null);
             } else {
                 JOptionPane.showMessageDialog(null, 
                     "Error al registrar el ingreso");
@@ -205,7 +216,8 @@ public class IngresoController {
     private void actualizarTotalRecibido() {
         int total = 0;
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            total += (int) modelo.getValueAt(i, 3);
+            int cantidadRecibida = (int) modelo.getValueAt(i, 3);
+            total += cantidadRecibida;
         }
         txtTotalRecibido.setText(String.valueOf(total));
     }

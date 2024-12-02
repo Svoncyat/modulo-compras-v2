@@ -31,37 +31,44 @@ public class IngresoDAO {
     }
 
     public boolean registrarIngreso(Ingreso ingreso) {
-        String sqlIngreso = "INSERT INTO Ingreso (ordenCompraId, cantidadRecibida) VALUES (?, ?)";
+        String sqlIngreso = "INSERT INTO Ingreso (ordenCompraId, articuloId, cantidadRecibida) VALUES (?, ?, ?)";
         String sqlUpdateOrden = "UPDATE OrdenCompra SET estado = ? WHERE id = ?";
-        String sqlUpdateStock = "UPDATE Articulo SET stock = stock + ? WHERE id = ?";
+        String sqlUpdateStock = "UPDATE Articulo SET stock = ? WHERE id = ?";
         
         Connection conn = null;
         try {
             conn = dbConfig.conectar();
             conn.setAutoCommit(false);
             
-            // Registrar ingreso
-            try (PreparedStatement pstmtIngreso = conn.prepareStatement(sqlIngreso)) {
-                pstmtIngreso.setInt(1, ingreso.getOrdenCompra().getId());
-                pstmtIngreso.setInt(2, ingreso.getCantidadRecibida());
-                pstmtIngreso.executeUpdate();
+            // Recorrer el Map de cantidades recibidas
+            for (Map.Entry<Integer, Integer> entry : ingreso.getCantidadesRecibidas().entrySet()) {
+                int articuloId = entry.getKey();
+                int cantidadRecibida = entry.getValue();
+
+                if (cantidadRecibida > 0) {
+                    // Actualizar stock
+                    try (PreparedStatement pstmtStock = conn.prepareStatement(sqlUpdateStock)) {
+                        pstmtStock.setInt(1, cantidadRecibida);
+                        pstmtStock.setInt(2, articuloId);
+                        pstmtStock.executeUpdate();
+                    }
+                    
+                    // Registrar ingreso
+                    try (PreparedStatement pstmtIngreso = conn.prepareStatement(sqlIngreso)) {
+                        pstmtIngreso.setInt(1, ingreso.getOrdenCompra().getId());
+                        pstmtIngreso.setInt(2, articuloId);
+                        pstmtIngreso.setInt(3, cantidadRecibida);
+                        pstmtIngreso.executeUpdate();
+                    }
+                    
+                }
             }
             
-            // Actualizar estado de orden usando el estado calculado en el controller
+            // Actualizar estado de la orden
             try (PreparedStatement pstmtOrden = conn.prepareStatement(sqlUpdateOrden)) {
-                pstmtOrden.setString(1, ingreso.getOrdenCompra().getEstado()); // Usar el estado calculado
+                pstmtOrden.setString(1, ingreso.getOrdenCompra().getEstado());
                 pstmtOrden.setInt(2, ingreso.getOrdenCompra().getId());
                 pstmtOrden.executeUpdate();
-            }
-            
-            // Actualizar stock de artículos
-            try (PreparedStatement pstmtStock = conn.prepareStatement(sqlUpdateStock)) {
-                for (DetalleOrdenCompra detalle : ingreso.getOrdenCompra().getDetalleOrdenCompra()) {
-                    pstmtStock.setInt(1, ingreso.getCantidadRecibida());
-                    pstmtStock.setInt(2, detalle.getArticulo().getId());
-                    pstmtStock.addBatch();
-                }
-                pstmtStock.executeBatch();
             }
             
             conn.commit();
@@ -74,16 +81,25 @@ public class IngresoDAO {
             }
             System.err.println("Error al registrar ingreso: " + e.getMessage());
             return false;
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
         }
     }
 
     public int obtenerCantidadRecibida(int ordenCompraId, int articuloId) {
-        String sql = "SELECT SUM(cantidadRecibida) as totalRecibido FROM Ingreso WHERE ordenCompraId = ?";
+        String sql = "SELECT COALESCE(SUM(cantidadRecibida), 0) as totalRecibido " +
+                     "FROM Ingreso " +
+                     "WHERE ordenCompraId = ? AND articuloId = ?";
         
         try (Connection conn = dbConfig.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, ordenCompraId);
+            stmt.setInt(2, articuloId);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {

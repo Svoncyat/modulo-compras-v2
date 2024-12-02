@@ -57,12 +57,24 @@ public class OrdenCompraController {
     }
 
     private void inicializarComponentes() {
-        // Configurar modelo de tabla
+        // Configurar modelo de tabla con todas las columnas necesarias
         modeloDetalle = new DefaultTableModel(
-                new Object[] { "Artículo", "Cantidad", "Precio Unitario", "Subtotal" }, 0) {
+                new Object[] { "ID", "Artículo", "Cantidad", "Precio Unitario", "Subtotal" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
+            }
+            
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                switch (columnIndex) {
+                    case 0: return Integer.class;    // ID
+                    case 1: return String.class;     // Artículo
+                    case 2: return Integer.class;    // Cantidad
+                    case 3: return Double.class;     // Precio Unitario
+                    case 4: return Double.class;     // Subtotal
+                    default: return Object.class;
+                }
             }
         };
         tablaDetalle.setModel(modeloDetalle);
@@ -214,29 +226,47 @@ public class OrdenCompraController {
 
     public ActionListener getAgregarItemListener() {
         return e -> {
+            Articulo articulo = (Articulo) cboArticulo.getSelectedItem();
+            if (articulo == null) {
+                JOptionPane.showMessageDialog(null, "Seleccione un artículo");
+                return;
+            }
+
+            // Verificar si el artículo ya existe en la tabla
+            for (int i = 0; i < modeloDetalle.getRowCount(); i++) {
+                int articuloId = (int) modeloDetalle.getValueAt(i, 0);
+                if (articuloId == articulo.getId()) {
+                    JOptionPane.showMessageDialog(null, 
+                        "Este artículo ya está en la orden. Si desea modificar la cantidad, elimine la línea y agréguela nuevamente.");
+                    return;
+                }
+            }
+
             try {
-                Articulo articulo = (Articulo) cboArticulo.getSelectedItem();
-                int cantidad = Integer.parseInt(txtCantidad.getText().trim());
-                double precioUnitario = Double.parseDouble(txtPrecioUnitario.getText().trim());
+                int cantidad = Integer.parseInt(txtCantidad.getText());
+                double precioUnitario = Double.parseDouble(txtPrecioUnitario.getText());
 
                 if (cantidad <= 0 || precioUnitario <= 0) {
-                    JOptionPane.showMessageDialog(null,
-                            "La cantidad y el precio unitario deben ser mayores a 0");
+                    JOptionPane.showMessageDialog(null, 
+                        "La cantidad y el precio unitario deben ser mayores a cero");
                     return;
                 }
 
                 double subtotal = cantidad * precioUnitario;
-                DetalleOrdenCompra detalle = new DetalleOrdenCompra(
-                        articulo, cantidad, precioUnitario, subtotal);
+                modeloDetalle.addRow(new Object[]{
+                    articulo.getId(),
+                    articulo.getNombre(),
+                    cantidad,
+                    precioUnitario,
+                    subtotal
+                });
 
-                detalles.add(detalle);
-                actualizarTablaDetalle();
-                actualizarTotal();
                 limpiarCamposDetalle();
+                actualizarTotal(); // Actualizar el total después de agregar un item
 
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null,
-                        "Por favor, ingrese valores numéricos válidos");
+                JOptionPane.showMessageDialog(null, 
+                    "Por favor ingrese valores numéricos válidos para cantidad y precio unitario");
             }
         };
     }
@@ -276,13 +306,29 @@ public class OrdenCompraController {
                 }
             }
             
-            if (detalles.isEmpty()) {
+            // Verificar si hay items en la tabla
+            if (modeloDetalle.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(null, 
                     "Debe agregar al menos un item a la orden");
                 return;
             }
             
             try {
+                // Crear la lista de detalles desde la tabla
+                detalles.clear();
+                for (int i = 0; i < modeloDetalle.getRowCount(); i++) {
+                    int articuloId = (int) modeloDetalle.getValueAt(i, 0);
+                    String nombreArticulo = (String) modeloDetalle.getValueAt(i, 1);
+                    int cantidad = (int) modeloDetalle.getValueAt(i, 2);
+                    double precioUnitario = (double) modeloDetalle.getValueAt(i, 3);
+                    
+                    Articulo articulo = new Articulo(articuloId, nombreArticulo, 0, "");
+                    DetalleOrdenCompra detalle = new DetalleOrdenCompra(articulo, cantidad, precioUnitario, cantidad * precioUnitario);
+                    detalles.add(detalle);
+                }
+                
+                double totalOrden = calcularTotalOrden();
+                
                 OrdenCompra orden = new OrdenCompra(
                     0,
                     numeroSeleccionado,
@@ -290,7 +336,7 @@ public class OrdenCompraController {
                     (Proveedor) cboProveedor.getSelectedItem(),
                     (Comprador) cboComprador.getSelectedItem(),
                     cboEstado.getSelectedItem().toString(),
-                    Double.parseDouble(txtTotal.getText())
+                    totalOrden
                 );
                 
                 orden.setDetalleOrdenCompra(detalles);
@@ -311,22 +357,16 @@ public class OrdenCompraController {
         };
     }
 
-    private void actualizarTablaDetalle() {
-        modeloDetalle.setRowCount(0);
-        for (DetalleOrdenCompra detalle : detalles) {
-            modeloDetalle.addRow(new Object[] {
-                    detalle.getArticulo().getNombre(),
-                    detalle.getCantidad(),
-                    detalle.getPrecioUnitario(),
-                    detalle.getSubtotal()
-            });
+    private double calcularTotalOrden() {
+        double total = 0.0;
+        for (int i = 0; i < modeloDetalle.getRowCount(); i++) {
+            total += (double) modeloDetalle.getValueAt(i, 4); // La columna 4 contiene el subtotal
         }
+        return total;
     }
 
     private void actualizarTotal() {
-        double total = detalles.stream()
-                .mapToDouble(DetalleOrdenCompra::getSubtotal)
-                .sum();
+        double total = calcularTotalOrden();
         txtTotal.setText(String.format("%.2f", total));
     }
 
@@ -387,5 +427,33 @@ public class OrdenCompraController {
                 }
             }
         };
+    }
+
+    public void agregarArticulo(Articulo articulo, int cantidad, double precioUnitario) {
+        for (DetalleOrdenCompra detalle : detalles) {
+            if (detalle.getArticulo().getId() == articulo.getId()) {
+                JOptionPane.showMessageDialog(null, "El artículo ya está en la orden. Puede quitar y agregar el artículo con la nueva cantidad de ser necesario.");
+                return;
+            }
+        }
+        DetalleOrdenCompra nuevoDetalle = new DetalleOrdenCompra(articulo, cantidad, precioUnitario, cantidad * precioUnitario);
+        detalles.add(nuevoDetalle);
+        actualizarTablaDetalle();
+    }
+
+    private void actualizarTablaDetalle() {
+        modeloDetalle.setRowCount(0); // Limpiar la tabla
+        
+        for (DetalleOrdenCompra detalle : detalles) {
+            modeloDetalle.addRow(new Object[]{
+                detalle.getArticulo().getId(),
+                detalle.getArticulo().getNombre(),
+                detalle.getCantidad(),
+                detalle.getPrecioUnitario(),
+                detalle.getSubtotal()
+            });
+        }
+        
+        actualizarTotal(); // Actualizar el total después de modificar la tabla
     }
 }

@@ -13,18 +13,8 @@ public class DevolucionDAO {
 
     public List<OrdenCompra> obtenerOrdenesRecibidas() {
         List<OrdenCompra> ordenes = new ArrayList<>();
-        String sql = "SELECT o.* FROM OrdenCompra o " +
-                    "WHERE o.estado = 'Recibido' " +
-                    "AND EXISTS (" +
-                    "    SELECT 1 FROM DetalleOrdenCompra doc " +
-                    "    LEFT JOIN (" +
-                    "        SELECT ordenCompraId, SUM(cantidadDevuelta) as totalDevuelto " +
-                    "        FROM Devolucion " +
-                    "        GROUP BY ordenCompraId" +
-                    "    ) d ON doc.ordenCompraId = d.ordenCompraId " +
-                    "    WHERE doc.ordenCompraId = o.id " +
-                    "    AND (d.totalDevuelto IS NULL OR doc.cantidad > d.totalDevuelto)" +
-                    ")";
+        String sql = "SELECT DISTINCT o.* FROM OrdenCompra o " +
+                     "WHERE o.estado IN ('Recibido', 'Backorder')";
         
         try (Connection conn = dbConfig.conectar();
              Statement stmt = conn.createStatement();
@@ -33,18 +23,15 @@ public class DevolucionDAO {
             while (rs.next()) {
                 OrdenCompra orden = ordenCompraDAO.obtenerPorId(rs.getInt("id"));
                 if (orden != null) {
-                    // Filtrar los detalles que aún tienen cantidad disponible para devolver
-                    List<DetalleOrdenCompra> detallesDisponibles = new ArrayList<>();
+                    boolean tieneDetallesDisponibles = false;
                     for (DetalleOrdenCompra detalle : orden.getDetalleOrdenCompra()) {
                         int cantidadDevuelta = obtenerCantidadDevuelta(orden.getId(), detalle.getArticulo().getId());
-                        int cantidadDisponible = detalle.getCantidad() - cantidadDevuelta;
-                        if (cantidadDisponible > 0) {
-                            detalle.setCantidad(cantidadDisponible);
-                            detallesDisponibles.add(detalle);
+                        if (detalle.getCantidad() > cantidadDevuelta) {
+                            tieneDetallesDisponibles = true;
+                            break;
                         }
                     }
-                    orden.setDetalleOrdenCompra(detallesDisponibles);
-                    if (!detallesDisponibles.isEmpty()) {
+                    if (tieneDetallesDisponibles) {
                         ordenes.add(orden);
                     }
                 }
@@ -55,7 +42,7 @@ public class DevolucionDAO {
         return ordenes;
     }
 
-    private int obtenerCantidadDevuelta(int ordenId, int articuloId) {
+    public int obtenerCantidadDevuelta(int ordenId, int articuloId) {
         String sql = "SELECT COALESCE(SUM(cantidadDevuelta), 0) as totalDevuelto " +
                     "FROM Devolucion " +
                     "WHERE ordenCompraId = ? AND articuloId = ?";
@@ -142,5 +129,27 @@ public class DevolucionDAO {
             System.err.println("Error al obtener devoluciones: " + e.getMessage());
         }
         return devoluciones;
+    }
+
+    public int obtenerCantidadRecibida(int ordenCompraId, int articuloId) {
+        String sql = "SELECT COALESCE(SUM(cantidadRecibida), 0) as totalRecibido " +
+                     "FROM Ingreso i " +
+                     "JOIN DetalleOrdenCompra doc ON i.ordenCompraId = doc.ordenCompraId " +
+                     "WHERE i.ordenCompraId = ? AND doc.articuloId = ?";
+        
+        try (Connection conn = dbConfig.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, ordenCompraId);
+            pstmt.setInt(2, articuloId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("totalRecibido");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener cantidad recibida: " + e.getMessage());
+        }
+        return 0;
     }
 }
